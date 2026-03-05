@@ -122,6 +122,7 @@ resource "azurerm_mssql_database" "ecommerce" {
   max_size_gb                 = 32
   auto_pause_delay_in_minutes = 60
   read_replica_count          = 0
+  tags                        = var.tags
 
   depends_on = [azurerm_mssql_server.ecommerce]
 }
@@ -219,12 +220,14 @@ resource "azurerm_linux_web_app" "ecommerce" {
 resource "azurerm_private_dns_zone" "sql" {
   resource_group_name = azurerm_resource_group.ecommerce.name
   name                = "privatelink.database.windows.net"
+  tags                = var.tags
 }
 
 # Private DNS zone for Blob private endpoint resolution.
 resource "azurerm_private_dns_zone" "storage_blob" {
   resource_group_name = azurerm_resource_group.ecommerce.name
   name                = "privatelink.blob.core.windows.net"
+  tags                = var.tags
 }
 
 # Links SQL private DNS zone to the application virtual network.
@@ -233,6 +236,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "sql" {
   virtual_network_id    = azurerm_virtual_network.ecommerce.id
   private_dns_zone_name = azurerm_private_dns_zone.sql.name
   name                  = "pdns-link-sql"
+  tags                  = var.tags
 }
 
 # Links Blob private DNS zone to the application virtual network.
@@ -241,6 +245,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "storage_blob" {
   virtual_network_id    = azurerm_virtual_network.ecommerce.id
   private_dns_zone_name = azurerm_private_dns_zone.storage_blob.name
   name                  = "pdns-link-storage-blob"
+  tags                  = var.tags
 }
 
 # Private endpoint for Azure SQL Server.
@@ -250,6 +255,7 @@ resource "azurerm_private_endpoint" "sql" {
   subnet_id                     = azurerm_subnet.private_endpoints.id
   name                          = "pep-sql-${var.prefix}-${var.environment}"
   custom_network_interface_name = "nic-pep-sql-${var.prefix}-${var.environment}"
+  tags                          = var.tags
 
   private_service_connection {
     name                           = "psc-sql"
@@ -271,6 +277,7 @@ resource "azurerm_private_endpoint" "storage_blob" {
   subnet_id                     = azurerm_subnet.private_endpoints.id
   name                          = "pep-stblob-${var.prefix}-${var.environment}"
   custom_network_interface_name = "nic-pep-stblob-${var.prefix}-${var.environment}"
+  tags                          = var.tags
 
   private_service_connection {
     name                           = "psc-storage-blob"
