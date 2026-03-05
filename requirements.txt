@@ -1,0 +1,14 @@
+# Web UI framework for the catalog application.
+streamlit==1.41.1 
+
+# Blob Storage SDK used to upload and read product images.
+azure-storage-blob==12.24.0 
+
+# Authentication helpers for Managed Identity and local credentials.
+azure-identity==1.19.0 
+
+# ODBC database connector used to connect to Azure SQL.
+pyodbc==5.2.0 
+
+# Loads environment variables from .env during local development.
+python-dotenv==1.0.1 
